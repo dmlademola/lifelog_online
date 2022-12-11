@@ -1,0 +1,3 @@
+different view mode for lifelog like in gmail
+add caption to each file
+preview uploaded fils using url.createobjecturl

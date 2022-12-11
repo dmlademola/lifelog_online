@@ -1,0 +1,260 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="EN-GB" id='html'>
+
+    <head>
+        <title>
+            My lifelog - Home.
+        </title>
+        <meta charset="UTF-8">
+        <meta name="description" content="I'm a friend and lifelog that you can share things with." />
+        <meta name="keywords" content="lifelog, friend, events, communicate" />
+        <meta name="author" content="Dml Ademola, TechWise LLC." />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="theme-color" content="rgb(1, 1, 34)" />
+        <link rel="icon" href="{% static 'images/lifelog_lg.jpg' %}" type="image/jpg" />
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+        <link rel="stylesheet" href="{% if user.theme == "light" %}{% static 'css/light_theme.css' %}{% elif user.theme == "dark" %}{% static 'css/dark_theme.css' %}{% else %}{% static 'css/grey_theme.css' %}{% endif %}" id="theme" />
+    </head>
+
+    <body>
+        {% if user.newly_signed_in == True %}
+        <div class='welcome' id='welcome'>
+            <h1>Welcome to ...</h1>
+            <img src="{% static 'images/lifelog_lg.jpg' %}" alt='#img'><br />
+            <p class='wel'>My lifelog</p>
+        </div>
+        {% endif %}
+        <div class="container1">
+            <div class="head">
+                <div class="division logo">
+                    <img src="{% static 'images/lifelog_lg.jpg' %}" alt='' style='width: 15px; height: 15px;' />
+                    <p>Lifelog.</p>
+                </div>
+                <div class="division search">
+                    <form name="search">
+                        <div class="search_cont">
+                            <form name="search">
+                                {% csrf_token %}
+                                <input type='text' name='search_str' class='input2' placeholder='Search for an event...' autocomplete="off" />
+                                <span title='Clear and refresh page...' id="clear" class="icon icon11"></span>
+                                {% comment %} <button type="submit"><span class="icon icon11"></span></button> {% endcomment %}
+                            </form>
+                        </div>
+                    </form>
+                </div>
+                <div class="division user">
+                    <div class ="user_img">
+                        <img src="{% static 'images/lifelog_lg.jpg' %}" alt=''/>
+                    </div>
+                    <p>Hola, {{user.fullname}}</p>
+                </div>
+            </div>
+            <div class="main" id="main">
+                <div class="add">
+                    <span class="icon icon6" onclick="fscreen(document.getElementById('n_event'));"></span>
+                </div>
+                <div class="sidebar">
+                    <div class="nav_icon active">
+                        <a href="{% url 'home' %}" class='icon icon8' title="Home."></a>
+                    </div>
+                    <div class="nav_icon">
+                        <a href="{% url 'trash' %}" class='icon icon4' title="Go to Trash."></a>
+                    </div>
+                    <div class="nav_icon">
+                        <a href="{% url 'profile' %}" class='icon icon10' title="Profile &amp; Preferences."></a>
+                    </div>
+                    <div class="nav_icon signout">
+                        <a href="{% url 'signout' %}" class='del icon icon7' title="Sign Out."></a>
+                    </div>
+                </div>
+                <div class="events" id="events">
+                    {% if events|length > 0 %}
+                    {% for event in events %}
+                    <div class='event' id="e{{event.id}}">
+                        <div class='ent_cont'>
+                            {% comment %} <input type="checkbox" data-id="e{{event.id}}" class="checkbox"/> {% endcomment %}
+                            {% if event.happy_moment == True %}<span class="happy_moment" title="Happy Moment">😀</span>{% endif %}
+                            <div class='entries'>
+                                <p class='brief'>{% autoescape off %}{{event.brief}}{% endautoescape %}</p>
+                                <p class='details'>{% autoescape off %}{{event.details}}{% endautoescape %}</p>
+                            </div>
+                            <div class='action'>
+                                <span class='icon icon3 icon_20px edit' title='Edit'></span>
+                                <span class='icon icon4 icon_20px del' title='Move to Trash'></span>
+                            </div>
+                        </div>
+                        <div class="event_bottom">
+                            {% if event.upload_ids > 0 %}<span class="med_no" title="{{event.upload_ids}} file(s) added.">(+{{event.upload_ids}})</span>{% endif %}
+                            <span class='dateofevent'>{{event.date_of_event|date:"l, F j, Y"}}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <h1 class='text' id='text'>You have no event yet, <span onclick="fscreen(document.getElementById('n_event'));" class="create">create an event</span></h1>
+                    {% endif %}
+                </div>
+                <div class="fscreen" id="fscreen">
+                    <div class="n_event" id='n_event'>
+                        <span class='close' title='Close'>&times;</span>
+                        <form name="new_event" id="new_event" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <h2 style="text-align: center;">Add New Event.</h2>
+                            <span id="msg"></span><br />
+                            <label for="brief">Brief</label>
+                            <input type="text" name="brief" id="brief" /><br>
+                            <span id='brief_count'></span><br />
+                            <label for="uploads">Upload Files</label>
+                            <input type="file" name="uploads" id="uploads" multiple hidden/>
+                            <div class="cont">
+                                <div class="uploads_preview" id="uploads_preview" onclick="$('#uploads').click();">
+                                    <p class="upload_text">Click or drag files here...</p>
+                                </div>
+                            </div>
+                            {% comment %} <div id='files'></div> {% endcomment %}
+                            <label for='date_of_event'>Date of Event</label>
+                            <div class='date_of_event' id='date_of_event'>
+                                <select name='day' id='day' class='input2'>
+                                    {% for day in date.days %}
+                                    {{day}}
+                                    {% endfor %}
+                                </select>
+                                <select name='month' id='month' class='input2'>
+                                    {% for month in date.months %}
+                                    {{month}}
+                                    {% endfor %}
+                                </select>
+                                <select name='year' id='year' class='input2'>
+                                    {% for year in date.years %}
+                                    {{year}}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <label for="happy_moment" style="display: inline;">Happy Moment.</label>
+                            <input type="checkbox" name="happy_moment" id="happy_moment" /><br />
+                            <label for="details">Details</label>
+                            <textarea name="details" id="details"></textarea><br />
+                            <span id='desc_count'></span><br />
+                            <div class="form_div">
+                                <button type="submit">SAVE</button>
+                                <button type="reset" style='background-color: red; color: whitesmoke;'>CLEAR</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="e_event" id='e_event'>
+                        <span class='close' title='Close'>&times;</span>
+                        <form name="edit_event" id="edit_event" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <h2 style="text-align: center;">Edit Event.</h2>
+                            <span id="e_msg"></span><br />
+                            <input type='hidden' name='event_id' id='event_id' />
+                            <label for="e_brief">Brief</label>
+                            <input type="text" name="brief" id="e_brief" /><br>
+                            <span id='e_brief_count'></span><br />
+                            <div class='e_preview' id='e_preview'></div>
+                            <label for="e_uploads">Upload Files</label>
+                            <input type="file" name="uploads" id="e_uploads" multiple hidden />
+                            <div class="e_cont">
+                                <div class="e_uploads_preview" id="e_uploads_preview" onclick="$('#e_uploads').click();">
+                                    <p class="upload_text">Click or drag files here...</p>
+                                </div>
+                            </div>
+                            <label for='e_date_of_event'>Date of Event</label>
+                            <div class='date_of_event' id='e_date_of_event'>
+                                <select name='day' id='e_day' class='input2'>
+                                    {% for day in date.days %}
+                                    {{day}}
+                                    {% endfor %}
+                                </select>
+                                <select name='month' id='e_month' class='input2'>
+                                    {% for month in date.months %}
+                                    {{month}}
+                                    {% endfor %}
+                                </select>
+                                <select name='year' id='e_year' class='input2'>
+                                    {% for year in date.years %}
+                                    {{year}}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <label for="happy_moment" style="display: inline;">Happy Moment.</label>
+                            <input type="checkbox" name="happy_moment" id="e_happy_moment" /><br />
+                            <label for="e_details">Details</label>
+                            <textarea name="details" id="e_details"></textarea><br />
+                            <span id='e_desc_count'></span><br />
+                            <div class="form_div">
+                                <button type="submit">SAVE CHANGES</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="event_fscreen" id='event_fscreen'>
+                        <span class='close' title='Close'>&times;</span>
+                        <div class='event_container'>
+                            <p class="fscreen_brief" id='fscreen_brief'></p>
+                            <div class='uploads_view' id='uploads_view'></div>
+                            <p id='fscreen_desc' class='fscreen_desc'>
+                                </h3>
+                            <h5 id='fscreen_dateofevent'></h5>
+                            <h5 id='fscreen_datetime'></h5>
+                            <div id='fscreen_action' class='fscreen_action'></div>
+                        </div>
+                    </div>
+                </div>
+                <div class='loader_cont'>
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                        <g transform="rotate(0 50 50)">
+                            <rect x="47" y="22.5" rx="7.05" ry="3.375" width="6" height="15" fill="red">
+                                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.875s" repeatCount="indefinite"></animate>
+                            </rect>
+                        </g>
+                        <g transform="rotate(45 50 50)">
+                            <rect x="47" y="22.5" rx="7.05" ry="3.375" width="6" height="15" fill="orange">
+                                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.75s" repeatCount="indefinite"></animate>
+                            </rect>
+                        </g>
+                        <g transform="rotate(90 50 50)">
+                            <rect x="47" y="22.5" rx="7.05" ry="3.375" width="6" height="15" fill="yellow">
+                                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.625s" repeatCount="indefinite"></animate>
+                            </rect>
+                        </g>
+                        <g transform="rotate(135 50 50)">
+                            <rect x="47" y="22.5" rx="7.05" ry="3.375" width="6" height="15" fill="green">
+                                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.5s" repeatCount="indefinite"></animate>
+                            </rect>
+                        </g>
+                        <g transform="rotate(180 50 50)">
+                            <rect x="47" y="22.5" rx="7.05" ry="3.375" width="6" height="15" fill="blue">
+                                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.375s" repeatCount="indefinite"></animate>
+                            </rect>
+                        </g>
+                        <g transform="rotate(225 50 50)">
+                            <rect x="47" y="22.5" rx="7.05" ry="3.375" width="6" height="15" fill="indigo">
+                                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.25s" repeatCount="indefinite"></animate>
+                            </rect>
+                        </g>
+                        <g transform="rotate(270 50 50)">
+                            <rect x="47" y="22.5" rx="7.05" ry="3.375" width="6" height="15" fill="violet">
+                                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.125s" repeatCount="indefinite"></animate>
+                            </rect>
+                        </g>
+                        <g transform="rotate(315 50 50)">
+                            <rect x="47" y="22.5" rx="7.05" ry="3.375" width="6" height="15" fill="#ee7856">
+                                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="0s" repeatCount="indefinite">
+                                </animate>
+                            </rect>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+            <div class='bottom'>
+                <span id="prev_btn" title='Previous.'>&#10094;</span>
+                <span id="next_btn" title='Next.'>&#10095;</span>
+            </div>
+        </div>
+        <script src="{% static 'js/dollar.js'%}"></script>
+        <script src="{% static 'js/script_home.js'%}"></script>
+        {% comment %}
+        <script src="{% static 'js/plugins/jquery-3.6.0.min.js'%}"></script> {% endcomment %}
+    </body>
+
+</html>

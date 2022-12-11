@@ -1,0 +1,111 @@
+a {
+    color: whitesmoke;
+}
+a:hover{
+    color: whitesmoke;
+    background-color: unset;
+}
+.signout{
+    color: whitesmoke;
+}
+.head{
+    background-color: rgb(14, 14, 64);
+    /* border-bottom: 1px dotted white; */
+}
+.bottom {
+    border-top: 1px dotted white;
+}
+.del, .del1{
+    color: red;
+}
+.suc, .err {
+    color: rgb(1, 1, 34);
+}
+.prog_cont, .e_prog_cont {
+    border: 1px solid whitesmoke;
+}
+.welcome{
+    color: whitesmoke;
+    background-color: rgb(1, 1, 34);
+}
+.search_cont{
+    background-color: whitesmoke;
+}
+.res{
+    color: rgb(1, 200, 1);
+}
+body {
+    background-color: rgb(1, 1, 34);
+    color: whitesmoke;
+}
+[type=file] {
+    border: 1px solid whitesmoke!important;
+}
+.event_file *{
+    border: 2px dotted whitesmoke;
+}
+.btn1{
+    border: 0;
+}
+.input2{
+    border: 0;
+}
+.post_input{
+    color: black;
+}
+.add{
+    background-color: whitesmoke;
+}
+.footer1{
+    background-color: white;
+    color: black;
+}
+.input_group {
+    background-color: white;
+}
+.fscreen{
+    background-color: rgb(1, 1, 34);
+}
+.n_event input, .n_event textarea, .e_event input, .e_event textarea{
+    border: 0;
+    outline: 0;
+}
+/* .preview {
+    border: 1px dotted whitesmoke;
+} */
+.sidebar{
+    background-color: rgb(14, 14, 64);
+}
+.event {
+    background-color: rgb(14, 14, 64);
+    border: 2px solid black;
+}
+.form_div button {
+    border: 0;
+}
+.container{
+    border: 1px solid white;
+}
+.msg_box{
+    color: black;
+    background-color: whitesmoke;
+}
+.top_act .icon:hover, .top_act a:hover {
+    border-bottom: 1px dotted whitesmoke;
+}
+.events{
+    background-color: rgb(1,1,34);
+}
+.action_pare .del:hover{
+    text-decoration: underline;
+}
+#size_cont {
+    border: 1px solid whitesmoke;
+}
+::-webkit-scrollbar-thumb {
+    background: whitesmoke;
+    border-radius: 100rem;
+}
+::-webkit-scrollbar-track {
+    background: rgb(1, 1, 34);
+}

@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="EN-GB">
+
+    <head>
+        <title>
+            My lifelog - Settings &amp; Preferences.
+        </title>
+        <meta charset="UTF-8">
+        <meta name="description" content="I'm a friend and lifelog that you can share things with." />
+        <meta name="keywords" content="lifelog, friend, events, communicate" />
+        <meta name="author" content="Dml Ademola, TechWise LLC." />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="theme-color" content="rgb(1, 1, 34)" id="theme-color" />
+        <link rel="icon" href="{% static "images/lifelog_lg.jpg" %}" type="image/jpg" />
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+        <link rel="stylesheet" href="{% if user.theme == "light" %}{% static 'css/light_theme.css' %}{% elif user.theme == "dark" %}{% static 'css/dark_theme.css' %}{% else %}{% static 'css/grey_theme.css' %}{% endif %}" id="theme" />
+    </head>
+
+    <body>
+        {% if user.newly_signed_in == True %}
+        <div class='welcome' id='welcome'>
+            <h1>Welcome to ...</h1>
+            <img src="{% static 'images/lifelog_lg.jpg' %}" alt='#img'><br />
+            <p class='wel'>My lifelog</p>
+        </div>
+        {% endif %}
+        <div class="container1">
+            <div class="head" style="border-bottom: 1px solid ">
+                <div class="division">
+                    <h1>My lifelog.</h1>
+                </div>
+                <div class="division top_act">
+                    <a href="{% url "home" %}" class="icon icon8" title="Home."></a>
+                    <a href="{% url "trash" %}" class="icon icon4" title="Go to Trash."></a>
+                    <a href="{% url "profile" %}" class="icon icon10 active" title="Profile & Preferences."></a>
+                    <a href="{% url "signout" %}" class="signout icon icon7" title="Sign Out."></a>
+                </div>
+                <div class="division">
+                    <h4>Hola, {{user.fullname}}</h4>
+                </div>
+            </div>
+            <div class="settings" id="settings">
+                <form name="settings" id="settings" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h2 style="text-align: center;">Profile &amp; Preferences.</h2>
+                    {% if messages %}{% for message in messages %}{{message}}{% endfor %}{% endif %}
+                    <fieldset>
+                        <legend>Profile</legend>
+                        <div class="flex_row">
+                            <div class="flex_div">
+                                {% if user.img %}<img src="{{user.img.url}}">{% endif %}
+                                <label for="fullname">Full Name</label>
+                                <input type="text" name="fullname" class="input2" id="fullname" value="{% if fields %}{{fields.fullname}}{% else %}{{user.fullname}}{% endif %}" />
+                            </div>
+                        </div>
+                        <div class="flex_row">
+                            <div class="flex_div">
+                                <label for="gender">Gender</label>
+                                <select name="gender" id="gender" class="input2">
+                                    <option value="r"{% if fields %}{% if fields.gender == 'r' %} selected{% endif %}{% else %}{% if user.gender == 'r' %} selected{% endif %}{% endif %}>Rather not say</option>
+                                    <option value="m"{% if fields %}{% if fields.gender == 'm' %} selected{% endif %}{% else %}{% if user.gender == 'm' %} selected{% endif %}{% endif %}>Male</option>
+                                    <option value="f"{% if fields %}{% if fields.gender == 'f' %} selected{% endif %}{% else %}{% if user.gender == 'f' %} selected{% endif %}{% endif %}>Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        <label for="date_of_birth">Date of Birth</label>
+                        <div class="flex_row">
+                            <div class="flex_div">
+                                <select name="day" id="day" class="input2">
+                                    {% if fields %}
+                                    {% for day in fields.dob.days %}
+                                    {% spaceless %}
+                                    {{day}}
+                                    {% endspaceless %}
+                                    {% endfor %}
+                                    {% else %}
+                                    {% for day in user.dob.days %}
+                                    {% spaceless %}
+                                    {{day}}
+                                    {% endspaceless %}
+                                    {% endfor %}
+                                    {% endif %}
+                                </select>
+                            </div>
+                            <div class="flex_div">
+                                <select name="month" id="month" class="input2">
+                                    {% if fields %}
+                                    {% for month in fields.dob.months %}
+                                    {{month}}
+                                    {% endfor %}
+                                    {% else %}
+                                    {% for month in user.dob.months %}
+                                    {{month}}
+                                    {% endfor %}
+                                    {% endif %}
+                                </select>
+                            </div>
+                            <div class="flex_div">
+                                <select name="year" id="year" class="input2">
+                                    {% if fields %}
+                                    {% for year in fields.dob.years %}
+                                    {{year}}
+                                    {% endfor %}
+                                    {% else %}
+                                    {% for year in user.dob.years %}
+                                    {{year}}
+                                    {% endfor %}
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex_row">
+                            <div class="flex_div">
+                                <label for="phone_no">Phone Number</label>
+                                <input type="text" name="phone_no" class="input2" id="phone_no" value="{% if fields %}{{fields.phone_no}}{% else %}{{user.phone_no}}{% endif %}" />
+                            </div>
+                        </div>
+                        <div class="flex_row">
+                            <div class="flex_div">
+                                <label for="email">Email</label>
+                                <input type="email" name="email" class="input2" id="email" value="{% if fields %}{{fields.email}}{% else %}{{user.email}}{% endif %}" />
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Preferences/Others</legend>
+                        <div class="flex_row">
+                            <div class="flex_div">
+                                <label for="username">Username</label>
+                                <input type="text" name="username" class="input2" id="username" value="{% if fields %}{{fields.username}}{% else %}{{user.username}}{% endif %}" />
+                            </div>
+                        </div>
+                        <div class="flex_row">
+                            <div class="flex_div">
+                                <label for="theme">Theme</label>
+                                <select name="theme" id="theme" class="input2">
+                                    <option value="light"{% if fields %}{% if fields.theme == 'light' %} selected{% endif %}{% else %}{% if user.theme == 'light' %} selected{% endif %}{% endif %}>Light(Default).</option>
+                                    <option value="dark"{% if fields %}{% if fields.theme == 'dark' %} selected{% endif %}{% else %}{% if user.theme == 'dark' %} selected{% endif %}{% endif %}>Dark.</option>
+                                    <option value="grey"{% if fields %}{% if fields.theme == 'grey' %} selected{% endif %}{% else %}{% if user.theme == 'grey' %} selected{% endif %}{% endif %}>Grey.</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex_row">
+                            <div class="flex_div">
+                                <label for="password">Password</label>
+                                <input type="password" name="password" class="input2" id="password" value="" placeholder="Your existing password ..." />
+                            </div>
+                        </div>
+                        <div class="flex_row">
+                            <div class="flex_div">
+                                <label for="npassword">New Password</label>
+                                <input type="password" name="npassword" class="input2" id="npassword" value="" />
+                            </div>
+                        </div>
+                        <div class="flex_row">
+                            <div class="flex_div">
+                                <label for="cpassword">Confirm New Password</label>
+                                <input type="password" name="cpassword" class="input2" id="cpassword" value="" />
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="form_div">
+                        <button type="submit">Save Changes.</button>
+                    </div>
+                </form>
+                <div id="size_cont">
+                    <div id="size_used" style="width: 13.39%; background-color: lime;"></div>
+                </div>
+                <p class="center size">You have used <span style="color: lime;">13.39%</span>, you have <span style="color: lime;">86.61% of 3GB</span> left.</p>
+            </div>
+        </div>
+        <script src="{% static 'js/script3.js' %}"></script>
+    </body>
+
+</html>

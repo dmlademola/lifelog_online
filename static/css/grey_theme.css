@@ -1,0 +1,109 @@
+a {
+    color: whitesmoke;
+}
+a:hover{
+    color: whitesmoke;
+    background-color: unset;
+}
+.signout{
+    color: whitesmoke;
+}
+.head{
+    background-color: #2d2d2d;
+}
+.events{
+    background-color: rgb(20, 20, 20);
+}
+.search_cont{
+    background-color: whitesmoke;
+}
+.bottom {
+    border-top: 1px dotted white;
+}
+.del, .del1{
+    color: red;
+}
+.suc, .err {
+    color: #2d2d2d;
+}
+.prog_cont, .e_prog_cont {
+    border: 1px solid whitesmoke;
+}
+.welcome{
+    color: whitesmoke;
+    background-color: #2d2d2d;
+}
+.res{
+    color: rgb(1, 200, 1);
+}
+body {
+    background-color: rgb(20, 20, 20);
+    color: whitesmoke;
+}
+[type=file] {
+    border: 1px solid whitesmoke!important;
+}
+.event_file *{
+    border: 2px dotted whitesmoke;
+}
+.btn1{
+    border: 0;
+}
+.input2{
+    border: 0;
+}
+.post_input{
+    color: black;
+}
+.footer1{
+    background-color: white;
+    color: black;
+}
+.input_group {
+    background-color: white;
+}
+.fscreen{
+    background-color: #2d2d2d;
+}
+.n_event input, .n_event textarea, .e_event input, .e_event textarea{
+    border: 0;
+    outline: 0;
+}
+.sidebar{
+    background-color: #2d2d2d;
+}
+.add{
+    background-color: rgb(27, 75, 233);
+}
+.event {
+    border: 2px solid rgb(10,10,10);
+}
+.form_div button {
+    border: 0;
+}
+.container{
+    border: 1px solid white;
+}
+.msg_box{
+    color: black;
+    background-color: whitesmoke;
+}
+.top_act .icon:hover, .top_act a:hover {
+    border-bottom: 1px dotted whitesmoke;
+}
+.event{
+    background-color: #2d2d2d;
+}
+.action_pare .del:hover{
+    text-decoration: underline;
+}
+#size_cont {
+    border: 1px solid whitesmoke;
+}
+::-webkit-scrollbar-thumb {
+    background: whitesmoke;
+    border-radius: 100rem;
+}
+::-webkit-scrollbar-track {
+    background: #2d2d2d;
+}

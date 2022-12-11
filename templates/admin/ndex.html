@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <style>
+            table {
+                width: 100%;
+                /*border: 1px solid black;*/
+                text-align: center;
+            }
+
+            td,
+            th {
+                width: max-content;
+                border: 1px dashed black;
+                padding: 10px;
+            }
+
+            .data:hover {
+                background-color: black;
+                color: white;
+                {% comment %} font-weight: 900; {% endcomment %}
+            }
+
+            th {
+                color: green;
+            }
+            .fit {
+                width: min-content;
+                padding: 1px;
+            }
+
+        </style>
+</head>
+<body>
+    <h1 style="color: red;text-align: center;">Errors</h1>
+    {% if errs %}
+    <p>{{errs|length}} error(s) in total.</p>
+    <a href="{% url 'admin' %}">Refresh</a>
+    <table>
+        <tr>
+            <th class="fit">ID</th>
+            <th>Error</th>
+            <th>Referer</th>
+            <th>More</th>
+            <th>Time Generated</th>
+            <th>User Affected</th>
+            <th>Resolved</th>
+        </tr>
+        {% for err in errs %}
+            <tr class="data">
+                <td class="fit">{{err.id}}</td>
+                <td>{{err.error_str}}</td>
+                <td>{{err.referer}}</td>
+                <td>{{err.more}}</td>
+                <td>{{err.time_gen}}</td>
+                <td>{{err.user_id}}</td>
+                <td>{{err.resolved}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <h1 style="color: green; text-align: center;">No error has been generated recently.</h1>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,125 @@
+a {
+    color: rgb(1, 1, 34);
+}
+a:hover{
+    color: rgb(1, 1, 34);
+    background-color: unset;
+}
+.signout{
+    color: rgb(1, 1, 34);
+}
+.head{
+    background-color: whitesmoke;
+    border-bottom: 1px dotted rgb(1, 1, 34);
+}
+.bottom{
+    border-top: 1px dotted rgb(1, 1, 34);
+    background-color: whitesmoke;
+}
+.prog_cont, .e_prog_cont {
+    border: 1px solid rgb(1, 1, 34);
+}
+.welcome{
+    color: rgb(1, 1, 34);
+    background-color: whitesmoke;
+}
+.del, .del1{
+    color: red;
+    text-decoration: none;
+}
+.res{
+    color: rgb(2, 167, 2);
+}
+body {
+    /* background-image: url('../images/1.jpg'); */
+    background-color: white;
+    color: rgb(1, 1, 34);
+}
+[type=file] {
+    border: 1px solid rgb(1, 1, 34)!important;
+}
+.btn1 {
+    background-color: rgb(1, 1, 34);
+    color: white;
+}
+.e_uploads_preview, .uploads_preview, .uploads_view{
+    background-color: whitesmoke;
+    border: 2px dashed rgb(193, 193, 193);
+}
+.prev:hover, .next:hover {
+  background-color: rgb(1, 1, 34);
+  color: whitesmoke;
+}
+.input2 {
+    background-color: transparent;
+    border: 1px solid rgb(1, 1, 34);
+}
+.search_cont{
+    background-color: white;
+    box-shadow: 1px 1px grey;
+}
+.search_cont .input2{
+    border: 0;
+}
+.post_input{
+    color: rgb(1, 1, 34);
+}
+.footer1{
+    background-color: rgb(1, 1, 34);
+    color: white;
+}
+.input_group {
+    background-color: white;
+    border:2px solid rgb(1, 1, 34)
+}
+.fscreen {
+    background-color: white;
+}
+.n_event input, .n_event textarea, .e_event input, .e_event textarea {
+    border: 1px solid rgb(1, 1, 34);
+}
+/* .preview {
+    border: 1px dotted rgb(1, 1, 34);
+} */
+.sidebar{
+    background-color: whitesmoke;
+}
+.event {
+    border: 2px solid rgb(193, 193, 193);
+    background-color: whitesmoke;
+}
+.form_div button {
+    background-color: rgb(1, 1, 34);
+    color: white;
+}
+.event_file *{
+    border: 2px dotted rgb(1, 1, 34);
+}
+.add{
+    background-color: rgb(27, 75, 233);
+}
+.container {
+    border: 1px solid rgb(1, 1, 34);
+}
+.msg_box{
+    color: rgb(1, 1, 34);
+    background-color: white;
+    border: 1px dotted rgb(1, 1, 34);
+}
+.top_act .icon:hover, .top_act a:hover {
+    border-bottom: 1px dotted rgb(1, 1, 34);
+}
+.size {
+    background-color: rgb(1, 1, 34);
+    color: white;
+}
+#size_cont {
+    border: 1px solid rgb(1, 1, 34);
+}
+::-webkit-scrollbar-thumb {
+    background: rgb(1, 1, 34);
+    border-radius: 100rem;
+}
+::-webkit-scrollbar-track {
+    background: white;
+}

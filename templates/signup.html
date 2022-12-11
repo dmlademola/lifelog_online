@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>
+            My lifelog - Sign Up.
+        </title>
+        <meta charset="UTF-8">
+        <meta name="description" content="I'm a friend and lifelog that you can share things with.">
+        <meta name="keywords" content="lifelog, friend, events, communicate, signup">
+        <meta name="author" content="Dml Ademola, TechWise LLC.">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="theme-color" content="rgb(1, 1, 34)" />
+        <link rel="icon" href="{% static 'images/lifelog_lg.jpg' %}" type="image/jpg" />
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/dark_theme.css' %}" />
+    </head>
+
+    <body>
+        <div class="header1" id="signup_head">
+            <h1>My lifelog.</h1>
+        </div>
+        <div class="container1">
+            <div class="top1">
+                <div class="div1">
+                    <h2>Sign Up.</h2>
+                </div>
+                <div style="text-align: right;">
+                    <a href="{% url 'signin' %}">Sign In.</a>
+                </div>
+            </div>
+            <form method="POST" action="{% url 'signup' %}" name="signup" class="form1">
+                {% csrf_token %}
+                {% if messages %}{% for message in messages %}{{message}}{% endfor %}{% endif %}
+                <label for="fullname" class="label1">Full Name</label>
+                <div class="input_group">
+                    <input type="text" class="input1" id="fullname" name="fullname" placeholder="John Doe" value="{{fields.fullname}}" autocomplete="off" />
+                    <span class="post_input" style="padding-right: 10px;" onclick="empty_this(document.getElementById('fullname'))">&times;</span>
+                </div>
+                <div class="div">
+                    <fieldset>
+                        <legend class="label1">Gender</legend>
+                        <div class="radio_input1">
+                            <input type="radio" class="radio_input" id="rather_not_say" name="gender" value="r"{% if fields.gender == 'r' or fields.gender == '' or not fields.gender %} checked{% endif %}/>
+                            <label for="rather_not_say" style="margin: 0;">Rather not say.</label>
+                        </div>
+                        <div class="radio_input1">
+                            <input type="radio" class="radio_input" id="male" name="gender" value="m"{% if fields.gender == 'm' %} checked{% endif %}/>
+                            <label for="male" style="margin: 0;">Male.</label>
+                        </div>
+                        <div class="radio_input1">
+                            <input type="radio" class="radio_input" id="female" name="gender" value="f"{% if fields.gender == 'f' %} checked{% endif %}/>
+                            <label for="female" style="margin: 0;">Female.</label>
+                        </div>
+                    </fieldset>
+                </div>
+                <label for="date_of_birth" class="label1">Date of Birth</label>
+                <div class='date_of_birth'>
+                    <div class='flex_div'>
+                        <select name='day' id='day' class='input2'>
+                            {% if fields %}
+                            {% for day in fields.date.days %}
+                            {% spaceless %}
+                            {{day}}
+                            {% endspaceless %}
+                            {% endfor %}
+                            {% else %}
+                            {% for day in date.days %}
+                            {% spaceless %}
+                            {{day}}
+                            {% endspaceless %}
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class='flex_div'>
+                        <select name='month' id='month' class='input2'>
+                            {% if fields %}
+                            {% for month in fields.date.months %}
+                            {% spaceless %}
+                            {{month}}
+                            {% endspaceless %}
+                            {% endfor %}
+                            {% else %}
+                            {% for month in date.months %}
+                            {% spaceless %}
+                            {{month}}
+                            {% endspaceless %}
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class='flex_div'>
+                        <select name='year' id='year' class='input2'>
+                            {% if fields %}
+                            {% for year in fields.date.years %}
+                            {% spaceless %}
+                            {{year}}
+                            {% endspaceless %}
+                            {% endfor %}
+                            {% else %}
+                            {% for year in date.years %}
+                            {% spaceless %}
+                            {{year}}
+                            {% endspaceless %}
+                            {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
+                <label for="phone_number" class="label1">Telephone Number</label>
+                <div class="input_group">
+                    <input type="text" class="input1" id="phone_number" name="phone_number" placeholder="01**********56" value="{{fields.phone_number}}" autocomplete="off" />
+                    <span class="post_input" style="padding-right: 10px;" onclick="empty_this(document.getElementById('telephone_number'))">&times;</span>
+                </div>
+                <label for="email" class="label1">Email</label>
+                <div class="input_group">
+                    <input type="text" class="input1" id="email" name="email" placeholder="johndoe@gmail.com" value="{{fields.email}}" autocomplete="off" />
+                    <span class="post_input" style="padding-right: 10px;" onclick="empty_this(document.getElementById('email'))">&times;</span>
+                </div>
+                <label for="username" class="label1">Username</label>
+                <div class="input_group">
+                    <input type="text" class="input1" id="username" name="username" placeholder="john_doe" value="{{fields.username}}" autocomplete="off" spellcheck='false'/>
+                    <span class="post_input" style="padding-right: 10px;" onclick="empty_this(document.getElementById('username'))">&times;</span>
+                </div>
+                <label for="password" class="label1">Password</label>
+                <div class="input_group">
+                    <input type="password" class="input1" id="password" name="password" value="" autocomplete="off" />
+                    <span class="post_input icon1 icon" onclick="psw_vis(document.getElementById('password'), this)"></span>
+                </div>
+                <label for="cpassword" class="label1">Confirm Password</label>
+                <div class="input_group">
+                    <input type="password" class="input1" id="cpassword" name="cpassword" value="" autocomplete="off" />
+                    <span class="post_input icon1 icon" onclick="psw_vis(document.getElementById('cpassword'), this)"></span>
+                </div>
+                <div class="center div">
+                    <button type="submit" class="btn1">SIGN UP.</button>
+                </div>
+            </form>
+            <p class="footer1">&copy; 2022 My lifelog.</p>
+            <script src="{% static 'js/script.js' %}"></script>
+        </div>
+    </body>
+
+</html>

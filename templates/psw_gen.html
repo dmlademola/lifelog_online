@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Password Generator</title>
+        <style>
+            table {
+                width: 100%;
+                /*border: 1px solid black;*/
+                text-align: center;
+            }
+
+            td,
+            th {
+                width: 25%;
+                border: 1px dashed black;
+                padding: 10px;
+            }
+
+            tr:hover {
+                background-color: aqua;
+                font-weight: 900;
+            }
+
+            th {
+                color: green;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div style="text-align: center;color: blue">
+            <h3>Password Generated</h3>
+            <h1>{{password}}</h1>
+        </div>
+        <a href='/lifelog/psw_del/all'>Delete All</a><br />
+        <a href="{% url 'psw_gen' %}">Generate new password</a>
+        <table>
+            <tr>
+                <th>Password ID</th>
+                <th>Password String</th>
+                <th>Generated on</th>
+                <th>Action</th>
+            </tr>
+            {% for password in passwords %}
+            <tr>
+                <td>{{password.id}}</td>
+                <td>{{password.psw}}</td>
+                <td>{{password.time_gen}}</td>
+                <td><a href="/lifelog/psw_del/{{password.id}}">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+
+</html>

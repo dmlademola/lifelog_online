@@ -1,0 +1,10 @@
+*.[oa]
+*~
+media/
+db.sqlite3
+*.tmp
+lifelog/__pycache__/
+lifelog_online/__pycache__/
+lifelog/validations/__pycache__/
+lifelog/migrations/__pycache__/
+.editorconfig

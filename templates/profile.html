@@ -4,40 +4,48 @@
 
     <head>
         <title>
-            My lifelog - Settings &amp; Preferences.
+            Lifelog - Profile &amp; Preferences.
         </title>
         <meta charset="UTF-8">
         <meta name="description" content="I'm a friend and lifelog that you can share things with." />
         <meta name="keywords" content="lifelog, friend, events, communicate" />
         <meta name="author" content="Dml Ademola, TechWise LLC." />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="theme-color" content="rgb(1, 1, 34)" id="theme-color" />
-        <link rel="icon" href="{% static "images/lifelog_lg.jpg" %}" type="image/jpg" />
+        <meta name="theme-color" content="rgb(1, 1, 34)" />
+        <link rel="icon" href="{% if user.theme == "dark" %}{% static 'images/lifelog_dark.png' %}{% else %}{% static 'images/lifelog_light.png' %}{% endif %}" type="image/png" />
         <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-        <link rel="stylesheet" href="{% if user.theme == "light" %}{% static 'css/light_theme.css' %}{% elif user.theme == "dark" %}{% static 'css/dark_theme.css' %}{% else %}{% static 'css/grey_theme.css' %}{% endif %}" id="theme" />
+        <link rel="stylesheet" href="{% if user.theme == "dark" %}{% static 'css/dark_theme.css' %}{% else %}{% static 'css/light_theme.css' %}{% endif %}" id="theme" />
     </head>
 
     <body>
         {% if user.newly_signed_in == True %}
         <div class='welcome' id='welcome'>
             <h1>Welcome to ...</h1>
-            <img src="{% static 'images/lifelog_lg.jpg' %}" alt='#img'><br />
-            <p class='wel'>My lifelog</p>
+            <img src="{% if user.theme == "dark" %}{% static 'images/lifelog_dark.png' %}{% else %}{% static 'images/lifelog_light.png' %}{% endif %}" class="wel_img" alt='#img'><br />
         </div>
         {% endif %}
         <div class="container1">
             <div class="head" style="border-bottom: 1px solid ">
-                <div class="division">
-                    <h1>My lifelog.</h1>
+                <div class="division logo">
+                    <img src="{% if user.theme == "dark" %}{% static 'images/lifelog_dark.png' %}{% else %}{% static 'images/lifelog_light.png' %}{% endif %}" alt='' />
+                    {% comment %} <p>Lifelog.</p> {% endcomment %}
                 </div>
-                <div class="division top_act">
-                    <a href="{% url "home" %}" class="icon icon8" title="Home."></a>
-                    <a href="{% url "trash" %}" class="icon icon4" title="Go to Trash."></a>
-                    <a href="{% url "profile" %}" class="icon icon10 active" title="Profile & Preferences."></a>
-                    <a href="{% url "signout" %}" class="signout icon icon7" title="Sign Out."></a>
+                <div class="division top_nav">
+                    <div class="nav_icon home" title="Home.">
+                        <span class='icon icon8'></span>
+                    </div>
+                    <div class="nav_icon trash" title="Trash.">
+                        <span class='icon icon4'></span>
+                    </div>
+                    <div class="nav_icon profile active" title="Profile &amp; Preferences.">
+                        <span class='icon icon10'></span>
+                    </div>
+                    <div class="nav_icon signout" title="Sign Out.">
+                        <span class='del icon icon7'></span>
+                    </div>
                 </div>
                 <div class="division">
-                    <h4>Hola, {{user.fullname}}</h4>
+                    <p>Hola, {{user.fullname}}</p>
                 </div>
             </div>
             <div class="settings" id="settings">
@@ -137,26 +145,25 @@
                                 <select name="theme" id="theme" class="input2">
                                     <option value="light"{% if fields %}{% if fields.theme == 'light' %} selected{% endif %}{% else %}{% if user.theme == 'light' %} selected{% endif %}{% endif %}>Light(Default).</option>
                                     <option value="dark"{% if fields %}{% if fields.theme == 'dark' %} selected{% endif %}{% else %}{% if user.theme == 'dark' %} selected{% endif %}{% endif %}>Dark.</option>
-                                    <option value="grey"{% if fields %}{% if fields.theme == 'grey' %} selected{% endif %}{% else %}{% if user.theme == 'grey' %} selected{% endif %}{% endif %}>Grey.</option>
                                 </select>
                             </div>
                         </div>
                         <div class="flex_row">
                             <div class="flex_div">
                                 <label for="password">Password</label>
-                                <input type="password" name="password" class="input2" id="password" value="" placeholder="Your existing password ..." />
+                                <input type="password" name="password" class="input2" id="password" value="" autocomplete="off" placeholder="Your existing password ..." />
                             </div>
                         </div>
                         <div class="flex_row">
                             <div class="flex_div">
                                 <label for="npassword">New Password</label>
-                                <input type="password" name="npassword" class="input2" id="npassword" value="" />
+                                <input type="password" name="npassword" class="input2" id="npassword" value="" autocomplete="off" />
                             </div>
                         </div>
                         <div class="flex_row">
                             <div class="flex_div">
                                 <label for="cpassword">Confirm New Password</label>
-                                <input type="password" name="cpassword" class="input2" id="cpassword" value="" />
+                                <input type="password" name="cpassword" class="input2" id="cpassword" value="" autocomplete="off" />
                             </div>
                         </div>
                     </fieldset>
@@ -164,13 +171,12 @@
                         <button type="submit">Save Changes.</button>
                     </div>
                 </form>
-                <div id="size_cont">
-                    <div id="size_used" style="width: 13.39%; background-color: lime;"></div>
-                </div>
-                <p class="center size">You have used <span style="color: lime;">13.39%</span>, you have <span style="color: lime;">86.61% of 3GB</span> left.</p>
+                <button class="clear_tra">Clear Trash.</button>
+                <button class="del_acc">Delete my account.</button>
             </div>
         </div>
-        <script src="{% static 'js/script3.js' %}"></script>
+        <script src="{% static 'js/dollar.js'%}"></script>
+        <script src="{% static 'js/script_profile.js' %}"></script>
     </body>
 
 </html>

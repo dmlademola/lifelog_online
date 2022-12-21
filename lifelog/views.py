@@ -1,19 +1,21 @@
 import datetime
-import html, re
-import json, os
+import html
+import json
+import mimetypes
+import os
+import re
 import zoneinfo
 from random import randint
-import mimetypes
 from wsgiref.util import FileWrapper
-from django.http import StreamingHttpResponse
 
 from django.contrib import messages
+from django.http import StreamingHttpResponse
 from django.shortcuts import HttpResponse, HttpResponseRedirect, render
 from django.urls import reverse
 from django.utils import safestring
 
 from lifelog import myutils, validations
-from lifelog.models import User, Error, Event, Password, Upload
+from lifelog.models import Error, Event, Password, Upload, User
 from lifelog_online.settings import MEDIA_ROOT
 
 # Create your views here.
@@ -25,6 +27,11 @@ def redirect(req):
 
 def signup_process(req):
     try:
+        if req.session.get("theme", False) is not False:
+            theme = req.session["theme"]
+        else:
+            theme = "light"
+
         if req.method == "POST":
             fullname = html.escape(req.POST["fullname"])
             gender = html.escape(req.POST["gender"])
@@ -72,7 +79,7 @@ def signup_process(req):
                     "email": email,
                     "username": username,
                 }
-                return render(req, "signup.html", {"fields": fields})
+                return render(req, "signup.html", {"fields": fields, "theme": theme})
 
             if User.create_user(
                 req,
@@ -92,7 +99,7 @@ def signup_process(req):
 
         else:
             date = myutils.date_gen(datetime.datetime.now())
-            return render(req, "signup.html", {"date": date})
+            return render(req, "signup.html", {"date": date, "theme": theme})
 
     except BaseException as Argument:
         Error.log_error(
@@ -105,8 +112,18 @@ def signup_process(req):
 
 def signin_process(req):
     try:
-        # if req.session.get("userid", False) is not False:
-        #     return HttpResponseRedirect(nxt_pg)
+        if req.session.get("theme", False) is not False:
+            theme = req.session["theme"]
+        else:
+            theme = "light"
+
+        if myutils.user_is_loggedin(req) is True:
+            messages.info(
+                req,
+                User.objects.get(id=req.session["userid"]).fullname
+                + " was already signed in!",
+            )
+            return HttpResponseRedirect(reverse("home"))
 
         if req.method == "POST":
             username = req.POST["username"]
@@ -126,20 +143,26 @@ def signin_process(req):
                     return render(
                         req,
                         "signin.html",
-                        {"username": username, "continue": req.POST["continue"]},
+                        {
+                            "username": username,
+                            "theme": theme,
+                            "continue": req.POST["continue"],
+                        },
                     )
 
                 else:
                     return render(
                         req,
                         "signin.html",
-                        {"username": username},
+                        {"username": username, "theme": theme},
                     )
 
             if User.objects.filter(username=username).update(
                 last_active=datetime.datetime.now()
             ):
-                req.session["userid"] = User.objects.get(username=username).id
+                user = User.objects.get(username=username)
+                req.session["userid"] = user.id
+                req.session["theme"] = user.theme
                 req.session["newly_signed_in"] = True
 
                 if (
@@ -155,9 +178,13 @@ def signin_process(req):
 
         else:
             if req.GET.get("continue", False) is not False:
-                return render(req, "signin.html", {"continue": req.GET["continue"]})
+                return render(
+                    req,
+                    "signin.html",
+                    {"continue": req.GET["continue"], "theme": theme},
+                )
             else:
-                return render(req, "signin.html")
+                return render(req, "signin.html", {"theme": theme})
 
     except BaseException as Argument:
         Error.log_error(
@@ -169,56 +196,56 @@ def signin_process(req):
 
 
 def home(req):
-    try:
-        if myutils.user_is_loggedin(req) is not True:
-            messages.info(
-                req,
-                safestring.mark_safe(
-                    "<p id='msg' style='visibility: visible'>You have to sign in first!</p>"
-                ),
-            )
-            return HttpResponseRedirect(
-                reverse("signin") + "?continue=" + reverse("home")
-            )
-
-        userid = req.session["userid"]
-        req.session["curr_home_page"] = 0
-        user = User.objects.get(id=userid)
-        if req.session.get("newly_signed_in", False) is not False:
-            user.newly_signed_in = True
-            del req.session["newly_signed_in"]
-
-        events = (
-            Event.objects.filter(owner=userid, trashed_on__isnull=True)
-            .values(
-                "id",
-                "brief",
-                "details",
-                "upload_ids",
-                "date_of_event",
-                "happy_moment",
-            )
-            .order_by("-date_of_event", "time_added")[0:15]
-        )
-
-        for event in events:
-            event = myutils.create_event(event, True)
-
-        date = myutils.date_gen(datetime.datetime.now())
-
-        return render(
+    # try:
+    if myutils.user_is_loggedin(req) is not True:
+        messages.info(
             req,
-            "home.html",
-            {"user": user, "events": events, "date": date},
+            safestring.mark_safe(
+                "<p id='msg' style='visibility: visible'>You have to sign in first!</p>"
+            ),
         )
+        return HttpResponseRedirect(reverse("signin") + "?continue=" + reverse("home"))
 
-    except BaseException as Argument:
-        Error.log_error(
-            str(Argument),
-            req,
-            "lifelog.home() from " + reverse("home"),
+    userid = req.session["userid"]
+    req.session["curr_home_page"] = 0
+    heads = dict()
+    heads["theme"] = req.session["theme"]
+    if req.session.get("newly_signed_in", False) is not False:
+        heads["newly_signed_in"] = True
+        del req.session["newly_signed_in"]
+
+    events = (
+        Event.objects.filter(owner=userid, trashed_on__isnull=True)
+        .values(
+            "id",
+            "brief",
+            "details",
+            "upload_ids",
+            "date_of_event",
+            "happy_moment",
         )
-        return render(req, "error.html")
+        .order_by("-date_of_event", "time_added")[0:15]
+    )
+
+    for event in events:
+        event = myutils.create_event(event, format_only=True)
+
+    date = myutils.date_gen(datetime.datetime.now())
+
+    return render(
+        req,
+        "home.html",
+        {"heads": heads, "events": events, "date": date},
+    )
+
+
+# except BaseException as Argument:
+#     Error.log_error(
+#         str(Argument),
+#         req,
+#         "lifelog.home() from " + reverse("home"),
+#     )
+#     return render(req, "error.html")
 
 
 def signout(req):
@@ -264,10 +291,11 @@ def trash(req):
             )
 
         userid = req.session["userid"]
-        user = User.objects.get(id=userid)
+        req.session["curr_trash_page"] = 0
+        heads = dict()
+        heads["theme"] = req.session["theme"]
         if req.session.get("newly_signed_in", False) is not False:
-            print("sss", req.session.get("newly_signed_in", False))
-            user.newly_signed_in = True
+            heads["newly_signed_in"] = True
             del req.session["newly_signed_in"]
 
         events = (
@@ -276,19 +304,17 @@ def trash(req):
                 "id",
                 "brief",
                 "details",
-                "uploads",
+                "upload_ids",
                 "date_of_event",
-                "time_added",
-                "trashed_on",
-                "last_modified",
+                "happy_moment",
             )
-            .order_by("-date_of_event", "-time_added")[0:15]
+            .order_by("-date_of_event", "time_added")[0:15]
         )
 
         for event in events:
-            event = myutils.set_files(event)
+            event = myutils.create_event(event, trash=True, format_only=True)
 
-        return render(req, "trash.html", {"user": user, "events": events})
+        return render(req, "trash.html", {"heads": heads, "events": events})
 
     except BaseException as Argument:
         Error.log_error(
@@ -314,8 +340,10 @@ def profile_process(req):
 
         userid = req.session["userid"]
         user = User.objects.get(id=userid)
+        heads = dict()
+        heads["theme"] = req.session["theme"]
         if req.session.get("newly_signed_in", False) is not False:
-            user.newly_signed_in = True
+            heads["newly_signed_in"] = True
             del req.session["newly_signed_in"]
 
         if req.method == "POST":
@@ -388,9 +416,10 @@ def profile_process(req):
                 messages.info(
                     req,
                     safestring.mark_safe(
-                        "<p class='suc'>User details saved successfully.</p>"
+                        "<p class='suc'>User details saved successfully</p>"
                     ),
                 )
+                req.session["theme"] = theme
                 return HttpResponseRedirect(reverse("profile"))
             else:
                 return render(req, "error.html")
@@ -428,6 +457,7 @@ def stream(req):
             content_type=content_type,
             status=200,
         )
+
         res["Content-Length"] = str(size)
         res["Accept-Ranges"] = "bytes"
         return res

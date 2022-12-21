@@ -5,7 +5,7 @@
 
     <head>
         <title>
-            My lifelog - Trash.
+            Lifelog - Trash.
         </title>
         <meta charset="UTF-8">
         <meta name="description" content="I'm a friend and lifelog that you can share things with." />
@@ -13,33 +13,47 @@
         <meta name="author" content="Dml Ademola, TechWise LLC." />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="theme-color" content="rgb(1, 1, 34)" />
-        <link href="{% static 'images/lifelog_lg.jpg' %}" rel="icon" type="image/jpg" />
+        <link rel="icon" href="{% if heads.theme == "dark" %}{% static 'images/lifelog_dark.png' %}{% else %}{% static 'images/lifelog_light.png' %}{% endif %}" type="image/png" />
         <link href="{% static 'css/style.css' %}" rel="stylesheet" />
-        <link rel="stylesheet" href="{% if user.theme == "light" %}{% static 'css/light_theme.css' %}{% elif user.theme == "dark" %}{% static 'css/dark_theme.css' %}{% else %}{% static 'css/grey_theme.css' %}{% endif %}" id="theme" />
+        <link rel="stylesheet" href="{% if heads.theme == "dark" %}{% static 'css/dark_theme.css' %}{% else %}{% static 'css/light_theme.css' %}{% endif %}" id="theme" />
     </head>
 
     <body>
-        {% if user.newly_signed_in == True %}
+        {% if heads.newly_signed_in == True %}
         <div class='welcome' id='welcome'>
             <h1>Welcome to ...</h1>
-            <img src="{% static 'images/lifelog_lg.jpg' %}" alt='#img'><br />
-            <p class='wel'>My lifelog</p>
+            <img src="{% if heads.theme == "dark" %}{% static 'images/lifelog_dark.png' %}{% else %}{% static 'images/lifelog_light.png' %}{% endif %}" class="wel_img" alt='#img'><br />
         </div>
         {% endif %}
         <div class="container1">
             <div class="head">
-                <div class="division">
-                    <h1>My lifelog.</h1>
+                <div class="division logo">
+                    <img src="{% if heads.theme == "dark" %}{% static 'images/lifelog_dark.png' %}{% else %}{% static 'images/lifelog_light.png' %}{% endif %}" alt='' />
+                    {% comment %} <p>Lifelog.</p> {% endcomment %}
                 </div>
-                <div class="division top_act">
-                    <a href="{% url 'home' %}" class='icon icon8' title="Home."></a>
-                    <a href="{% url 'trash' %}" class='icon icon4 active' title="Go to Trash."></a>
-                    <a href="{% url 'profile' %}" class='icon icon10' title="Profile &amp; Preferences."></a>
-                    <a href="{% url 'signout' %}" class='signout icon icon7' title="Sign Out."></a>
+                <div class="division top_nav">
+                    <div class="nav_icon home" title="Home.">
+                        <span class='icon icon8'></span>
+                    </div>
+                    <div class="nav_icon trash active" title="Trash.">
+                        <span class='icon icon4'></span>
+                    </div>
+                    <div class="nav_icon profile" title="Profile &amp; Preferences.">
+                        <span class='icon icon10'></span>
+                    </div>
+                    <div class="nav_icon signout" title="Sign Out.">
+                        <span class='del icon icon7'></span>
+                    </div>
                 </div>
-                <div class="division">
-                    <form name='search' onsubmit='search_ajax(event, this["search_str"].value);'>
-                        <input type='text' name='search_str' class='input2' placeholder='Search for an event...' onkeyup='search_ajax(event, this.value);' onfocus='if (this.value != "") { search_ajax(event, this.value); }' />
+                <div class="division search">
+                    <form name="search">
+                        <div class="search_cont">
+                            <form name="search">
+                                {% csrf_token %}
+                                <input type='text' name='search_str' class='input2' placeholder='Search for an event...' autocomplete="off" />
+                                <span title='Clear search...' id="clear" class="icon icon11"></span>
+                            </form>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -49,42 +63,94 @@
                     {% for event in events %}
                     <div class='event' id="e{{event.id}}">
                         <div class='ent_cont'>
+                            {% if event.happy_moment == True %}<span class="happy_moment" title="Happy Moment">😀</span>{% endif %}
                             <div class='entries'>
-                                <p class='brief'>{{event.brief}}</p>
-                                <p class='details'>{{event.details}}</p>
-                                <h6 class='dateofevent' data-value="{{event.date_of_event|date:"Y-m-d"}}">Date: {{event.date_of_event|date:"l, j F, Y"}}</h6>
+                                <p class='brief'>{% autoescape off %}{{event.brief}}{% endautoescape %}</p>
+                                <p class='details'>{% autoescape off %}{{event.details}}{% endautoescape %}</p>
                             </div>
                             <div class='action'>
-                                <span class='icon icon9 icon_20px res' title='Restore from Trash'></span>
+                                <span class='icon icon9 icon_20px res' title='Restore.'></span>
                                 <span class='icon icon4 icon_20px del' title='Delete permanently.'></span>
                             </div>
+                        </div>
+                        <div class="event_bottom">
+                            {% if event.upload_ids > 0 %}<span class="med_no" title="{{event.upload_ids}} file(s) added.">(+{{event.upload_ids}})</span>{% endif %}
+                            <span class='dateofevent'>{{event.date_of_event|date:"l, F j, Y"}}</span>
                         </div>
                     </div>
                     {% endfor %}
                     {% else %}
-                    <h1 class='text' id='text'>No event found in trash!</h1>
+                    <h1 class='text' id='text'>No event found here.</h1>
                     {% endif %}
                 </div>
                 <div class="fscreen" id="fscreen">
                     <div class="event_fscreen" id='event_fscreen'>
-                        <span class='close' onclick="document.getElementById('fscreen').style.display = 'none';" title='Close'>&times;</span>
+                        <span class='close' title='Close'>&times;</span>
                         <div class='event_container'>
-                            <p id='fscreen_brief' style='text-align: center;overflow-wrap: anywhere;'></p>
-                            <div class='event_file' id='event_file'></div>
-                            <h3 id='fscreen_desc' class='fscreen_desc'></h3>
+                            <p class="fscreen_brief" id='fscreen_brief'></p>
+                            <div class='uploads_view' id='uploads_view'></div>
+                            <p id='fscreen_desc' class='fscreen_desc'>
+                                </h3>
                             <h5 id='fscreen_dateofevent'></h5>
                             <h5 id='fscreen_datetime'></h5>
                             <div id='fscreen_action' class='fscreen_action'></div>
                         </div>
                     </div>
                 </div>
+                <div class='loader_cont'>
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                        <g transform="rotate(0 50 50)">
+                            <rect x="47" y="22.5" rx="7.05" ry="3.375" width="6" height="15" fill="red">
+                                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.875s" repeatCount="indefinite"></animate>
+                            </rect>
+                        </g>
+                        <g transform="rotate(45 50 50)">
+                            <rect x="47" y="22.5" rx="7.05" ry="3.375" width="6" height="15" fill="orange">
+                                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.75s" repeatCount="indefinite"></animate>
+                            </rect>
+                        </g>
+                        <g transform="rotate(90 50 50)">
+                            <rect x="47" y="22.5" rx="7.05" ry="3.375" width="6" height="15" fill="yellow">
+                                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.625s" repeatCount="indefinite"></animate>
+                            </rect>
+                        </g>
+                        <g transform="rotate(135 50 50)">
+                            <rect x="47" y="22.5" rx="7.05" ry="3.375" width="6" height="15" fill="green">
+                                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.5s" repeatCount="indefinite"></animate>
+                            </rect>
+                        </g>
+                        <g transform="rotate(180 50 50)">
+                            <rect x="47" y="22.5" rx="7.05" ry="3.375" width="6" height="15" fill="blue">
+                                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.375s" repeatCount="indefinite"></animate>
+                            </rect>
+                        </g>
+                        <g transform="rotate(225 50 50)">
+                            <rect x="47" y="22.5" rx="7.05" ry="3.375" width="6" height="15" fill="indigo">
+                                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.25s" repeatCount="indefinite"></animate>
+                            </rect>
+                        </g>
+                        <g transform="rotate(270 50 50)">
+                            <rect x="47" y="22.5" rx="7.05" ry="3.375" width="6" height="15" fill="violet">
+                                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="-0.125s" repeatCount="indefinite"></animate>
+                            </rect>
+                        </g>
+                        <g transform="rotate(315 50 50)">
+                            <rect x="47" y="22.5" rx="7.05" ry="3.375" width="6" height="15" fill="#ee7856">
+                                <animate attributeName="opacity" values="1;0" keyTimes="0;1" dur="1s" begin="0s" repeatCount="indefinite">
+                                </animate>
+                            </rect>
+                        </g>
+                    </svg>
+                </div>
             </div>
             <div class='bottom'>
-                <span id="next_btn" title='Previous.'>&laquo;Prev</span>
-                <span id="prev_btn" title='Next.'>Next&raquo;</span>
+                <span id="prev_btn" title='Previous.'>&#10094;</span>
+                <span id="next_btn" title='Next.'>&#10095;</span>
+            </div>
             </div>
         </div>
-        <script src="{% static 'js/script1.js' %}"></script>
+        <script src="{% static 'js/dollar.js'%}"></script>
+        <script src="{% static 'js/script_trash.js'%}"></script>
     </body>
 
 </html>

@@ -5,19 +5,13 @@ a:hover{
     color: rgb(1, 1, 34);
     background-color: unset;
 }
-.signout{
-    color: rgb(1, 1, 34);
-}
 .head{
     background-color: whitesmoke;
-    border-bottom: 1px dotted rgb(1, 1, 34);
+    border-bottom: 1px solid rgb(193, 193, 193);
 }
 .bottom{
     border-top: 1px dotted rgb(1, 1, 34);
     background-color: whitesmoke;
-}
-.prog_cont, .e_prog_cont {
-    border: 1px solid rgb(1, 1, 34);
 }
 .welcome{
     color: rgb(1, 1, 34);
@@ -45,6 +39,9 @@ body {
 .e_uploads_preview, .uploads_preview, .uploads_view{
     background-color: whitesmoke;
     border: 2px dashed rgb(193, 193, 193);
+}
+.uploads_view{
+    border: 1px solid rgb(193, 193, 193);
 }
 .prev:hover, .next:hover {
   background-color: rgb(1, 1, 34);
@@ -96,7 +93,8 @@ body {
     border: 2px dotted rgb(1, 1, 34);
 }
 .add{
-    background-color: rgb(27, 75, 233);
+    color: whitesmoke;
+    background-color: rgb(1, 1, 34);
 }
 .container {
     border: 1px solid rgb(1, 1, 34);
@@ -106,9 +104,15 @@ body {
     background-color: white;
     border: 1px dotted rgb(1, 1, 34);
 }
-.top_act .icon:hover, .top_act a:hover {
+.top_nav .nav_icon.active {
+    border-bottom: 1px solid rgb(1, 1, 34);
+}
+.top_nav .nav_icon:hover {
     border-bottom: 1px dotted rgb(1, 1, 34);
 }
+/* .top_act .icon:hover, .top_act a:hover {
+    border-bottom: 1px dotted rgb(1, 1, 34);
+} */
 .size {
     background-color: rgb(1, 1, 34);
     color: white;

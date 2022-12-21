@@ -1,0 +1,29 @@
+{
+    "python.linting.pylintEnabled": true,
+    "python.linting.banditEnabled": false,
+    "python.linting.enabled": true,
+    "python.linting.mypyEnabled": false,
+    "python.linting.pycodestyleEnabled": false,
+    "python.linting.prospectorEnabled": false,
+    "python.pythonPath": "C:\\Users\\lenovo\\envs\\env_one\\Scripts\\python.exe",
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "source": "PowerShell",
+            "icon": "terminal-powershell",
+            "args": ["-ExecutionPolicy", "Bypass"]
+        }
+    },
+    "python.formatting.provider": "black",
+    "html.format.indentHandlebars": false,
+    "html.format.indentInnerHtml": true,
+    "pythonIndent.keepHangingBracketOnLine": true,
+    "pythonIndent.useTabOnHangingIndent": true,
+    "pythonIndent.trimLinesWithOnlyWhitespace": true,
+    "css.format.spaceAroundSelectorSeparator": true,
+    "less.format.spaceAroundSelectorSeparator": true,
+    "scss.format.spaceAroundSelectorSeparator": true,
+    "editor.formatOnType": true,
+    "[python]": {
+        "editor.formatOnPaste": false,
+    }
+}

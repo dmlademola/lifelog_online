@@ -4,7 +4,7 @@
 
     <head>
         <title>
-            My lifelog.
+            Lifelog.
         </title>
         <meta charset="UTF-8">
         <meta name="description" content="I'm a friend and lifelog that you can share things with.">
@@ -12,9 +12,9 @@
         <meta name="author" content="Dml Ademola, TechWise LLC.">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="theme-color" content="rgb(1, 1, 34)" />
-        <link rel="icon" href="{% static 'images/lifelog_lg.jpg' %}" type="image/jpg" />
+        <link rel="icon" href="{% if theme == "dark" %}{% static 'images/lifelog_dark.png' %}{% else %}{% static 'images/lifelog_light.png' %}{% endif %}" type="image/png" />
         <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/dark_theme.css' %}" />
+        <link rel="stylesheet" href="{% if theme == "dark" %}{% static 'css/dark_theme.css' %}{% else %}{% static 'css/light_theme.css' %}{% endif %}" />
         <style type="text/css">
             html,
             body {
@@ -29,22 +29,22 @@
     <body>
         <div class="container">
             <div class="header1">
-                <h1 class="site_title">My lifelog.</h1>
+                <img src="{% if theme == "dark" %}{% static 'images/lifelog_dark.png' %}{% else %}{% static 'images/lifelog_light.png' %}{% endif %}" alt="Lifelog" />
             </div>
             <form name="signin" action="{% spaceless %}{% url 'signin' %}{% if continue %}?continue={{continue}}{% endif %}{% endspaceless %}" method="POST">
                 {% if messages %}{% for message in messages %}{{message}}{% endfor %}{% endif %}
                 {% csrf_token %}
                 <label for="username">Username</label>
                 <div class="input_group">
-                    <input type="text" name="username" class="input1" value="{{username}}" id='username' autocomplete="off"  spellcheck='false'/>
+                    <input type="text" name="username" class="input1" value="{{username}}" id='username' autocomplete="off" spellcheck='false' />
                     <span class="post_input" style="padding-right: 10px;" onclick="empty_this(document.getElementById('username'))">&times;</span>
                 </div>
                 <label for="password">Password</label>
                 <div class="input_group">
-                    <input type="password" name="password" class="input1" id="password" autocomplete="off"/>
+                    <input type="password" name="password" class="input1" id="password" autocomplete="off" />
                     <span class="post_input icon1 icon" onclick="psw_vis(document.getElementById('password'), this)" id='psw_btn'></span>
                 </div>
-                <input type="hidden" name="continue" value="{{continue}}"/>
+                <input type="hidden" name="continue" value="{{continue}}" />
                 <button type="submit" class="btn1">SIGN IN</button><br />
                 <p style="text-align: center; margin: 0;"><a href="{% url 'signup' %}">Sign Up</a></p>
             </form>

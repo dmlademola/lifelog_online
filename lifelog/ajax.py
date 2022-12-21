@@ -6,10 +6,11 @@ from datetime import datetime
 
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
+from django.db.models import Q
 from django.shortcuts import HttpResponse, HttpResponseRedirect, render
 from django.urls import reverse
 from django.utils import safestring
-from django.db.models import Q
+
 from lifelog import myutils, validations
 from lifelog.models import *
 
@@ -738,6 +739,136 @@ def trash_event(req):
         )
 
 
+def restore_event(req):
+    try:
+        if myutils.user_is_loggedin(req) is not True:
+            return HttpResponse(
+                json.dumps(
+                    {
+                        "success": False,
+                        "message": "You are not signed in!",
+                    }
+                )
+            )
+        event_id = req.GET["id"]
+
+        if event_id.isnumeric() is False:
+            return HttpResponse(
+                json.dumps(
+                    {
+                        "success": False,
+                        "message": "Sorry, an error occurred!",
+                    }
+                )
+            )
+
+        if not Event.objects.filter(
+            id=event_id, owner=req.session["userid"], trashed_on__isnull=False
+        ).exists():
+            return HttpResponse(
+                json.dumps(
+                    {
+                        "success": False,
+                        "message": "That event does not exist!",
+                    }
+                )
+            )
+
+        if Event.restore_event(req, event_id) is True:
+            return HttpResponse(
+                json.dumps(
+                    {
+                        "success": True,
+                        "message": "Event restored successfully.",
+                    }
+                )
+            )
+        return HttpResponse(
+            json.dumps(
+                {
+                    "success": False,
+                    "message": "Sorry, an error occurred!",
+                }
+            )
+        )
+
+    except BaseException as Argument:
+        Error.log_error(
+            str(Argument),
+            req,
+            "lifelog.ajax.restore_event() from " + reverse("restore_event_ajax"),
+        )
+        return HttpResponse(
+            json.dumps(
+                {
+                    "success": False,
+                    "message": "Sorry, an error occurred!",
+                }
+            )
+        )
+
+
+def delete_event(req):
+    try:
+        if myutils.user_is_loggedin(req) is not True:
+            return HttpResponse(
+                json.dumps(
+                    {
+                        "success": False,
+                        "message": "You are not signed in!",
+                    }
+                )
+            )
+        event_id = req.GET["id"]
+
+        if event_id.isnumeric() is False:
+            return HttpResponse(
+                json.dumps(
+                    {
+                        "success": False,
+                        "message": "Sorry, an error occurred!",
+                    }
+                )
+            )
+
+        if not Event.objects.filter(
+            id=event_id, owner=req.session["userid"], trashed_on__isnull=False
+        ).exists():
+            return HttpResponse(
+                json.dumps(
+                    {
+                        "success": False,
+                        "message": "That event does not exist!",
+                    }
+                )
+            )
+
+        if myutils.delete_event(req, event_id) is True:
+            return HttpResponse(
+                json.dumps(
+                    {
+                        "success": True,
+                        "message": "Event deleted permanently.",
+                    }
+                )
+            )
+
+    except BaseException as Argument:
+        Error.log_error(
+            str(Argument),
+            req,
+            "lifelog.ajax.delete_event() from " + reverse("delete_event_ajax"),
+        )
+        return HttpResponse(
+            json.dumps(
+                {
+                    "success": False,
+                    "message": "Sorry, an error occurred!",
+                }
+            )
+        )
+
+
 def pagination(req):
     try:
         if myutils.user_is_loggedin(req) is not True:
@@ -760,6 +891,15 @@ def pagination(req):
                 )
             )
 
+        if re.fullmatch(
+            r"(http://127.0.0.1:8000/lifelog/home/)+.*", req.META["HTTP_REFERER"]
+        ):
+            trashed_is_null = True
+        elif re.fullmatch(
+            r"(http://127.0.0.1:8000/lifelog/trash/)+.*", req.META["HTTP_REFERER"]
+        ):
+            trashed_is_null = False
+
         if nav == "next":
             start = 15 * (req.session["curr_home_page"] + 1)
         elif nav == "prev" and ((req.session["curr_home_page"] - 1) >= 0):
@@ -777,7 +917,9 @@ def pagination(req):
             start = 15 * req.session["curr_home_page"]
 
         events = (
-            Event.objects.filter(owner=req.session["userid"], trashed_on__isnull=True)
+            Event.objects.filter(
+                owner=req.session["userid"], trashed_on__isnull=trashed_is_null
+            )
             .values(
                 "id",
                 "brief",
@@ -801,7 +943,7 @@ def pagination(req):
         else:
             event_str = str()
             for event in events:
-                event_str += myutils.create_event(event)
+                event_str += myutils.create_event(event, not trashed_is_null)
 
             if nav == "next":
                 req.session["curr_home_page"] += 1
@@ -822,6 +964,90 @@ def pagination(req):
             str(Argument),
             req,
             "lifelog.ajax.pagination() from " + reverse("pagination_ajax"),
+        )
+        return HttpResponse(
+            json.dumps(
+                {
+                    "success": False,
+                    "message": "Sorry, an error occurred!",
+                }
+            )
+        )
+
+
+def delete_file(req):
+    try:
+        if myutils.user_is_loggedin(req) is not True:
+            return HttpResponse(
+                json.dumps(
+                    {
+                        "success": False,
+                        "message": "You are not signed in!",
+                    }
+                )
+            )
+
+        event_id = req.GET["event_id"]
+        file_id = req.GET["file_id"]
+
+        if event_id.isnumeric() is False:
+            return HttpResponse(
+                json.dumps(
+                    {
+                        "success": False,
+                        "message": "Sorry, an error occurred!",
+                    }
+                )
+            )
+
+        if not Event.objects.filter(
+            id=event_id, owner=req.session["userid"], trashed_on__isnull=True
+        ).exists():
+            return HttpResponse(
+                json.dumps(
+                    {
+                        "success": False,
+                        "message": "That file does not exist!",
+                    }
+                )
+            )
+
+        upload_ids = json.loads(
+            Event.objects.get(id=event_id, owner=req.session["userid"]).upload_ids
+        )
+        print(upload_ids)
+
+        if file_id not in upload_ids:
+            return HttpResponse(
+                json.dumps(
+                    {
+                        "success": False,
+                        "message": "That file does not exist!",
+                    }
+                )
+            )
+
+        proc = Process(target=stream)
+        proc.start()
+        proc.terminate()
+        os.unlink(os.path.join(MEDIA_ROOT, Upload.objects.get(id=file_id).path))
+        Upload.objects.get(id=file_id).delete()
+        upload_ids.remove(file_id)
+        if Event.objects.filter(id=event_id).update(upload_ids=json.dumps(upload_ids)):
+            return HttpResponse(
+                json.dumps(
+                    {
+                        "success": True,
+                        "message": "Deleted file successfully.",
+                    }
+                )
+            )
+
+    except BaseException as Argument:
+        Error.log_error(
+            str(Argument),
+            req,
+            "lifelog.ajax.delete_file() from " + reverse("delete_file_ajax"),
         )
         return HttpResponse(
             json.dumps(
@@ -895,7 +1121,7 @@ def search(req):
         else:
             event_str = str()
             for event in events:
-                event_str += myutils.create_event(event)
+                event_str += myutils.create_event(event, not trashed_is_null)
 
             events = event_str
 

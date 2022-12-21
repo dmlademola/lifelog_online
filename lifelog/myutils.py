@@ -3,7 +3,10 @@ import json
 import re, os
 from datetime import datetime
 from random import randint
-from lifelog.models import Upload
+from lifelog.models import Upload, Event
+from multiprocessing import Process
+from lifelog import views
+from lifelog_online.settings import MEDIA_ROOT
 
 from django.utils import safestring, timezone
 from lifelog_online import settings
@@ -12,7 +15,7 @@ from lifelog_online import settings
 
 
 def user_is_loggedin(req):
-    if req.session.get("userid", False) == False:
+    if req.session.get("userid", False) is False:
         return False
 
     return True
@@ -191,15 +194,7 @@ def file_path(filename, dir):
     )
 
 
-def create_event(event, format_only=False):
-    """
-    Formats the event arg and return the formatted event
-
-    Args:
-        event (Any): Must be an event
-        format_only (bool, optional): If set to True, event is only formatted and returned, else, event with html tags is returned. Defaults to False.
-    """
-
+def create_event(event, trash=False, format_only=False):
     lines = event["details"].split("<br />")
     text = det = str()
     for line in lines:
@@ -210,15 +205,13 @@ def create_event(event, format_only=False):
         det += line + "<br />"
 
     event["details"] = det.removesuffix("<br />")
-
     event["upload_ids"] = len(json.loads(event["upload_ids"]))
 
-    if format_only == True:
+    if format_only is True:
         return event
 
     e = "<div class='event' id='e" + str(event["id"]) + "'>"
     e += "<div class='ent_cont'>"
-    # e += "<input type='checkbox' data-id=" + str(event["id"]) + " class='checkbox'/>"
     if event["happy_moment"] is True:
         e += "<span class='happy_moment' title='Happy Moment'>😀</span>"
     e += "<div class='entries'>"
@@ -226,8 +219,14 @@ def create_event(event, format_only=False):
     e += "<p class='details'>" + event["details"] + "</p>"
     e += "</div>"
     e += "<div class='action'>"
-    e += "<span class='icon icon3 icon_20px edit' title='Edit'></span>"
-    e += "<span class='icon icon4 icon_20px del' title='Move to Trash'></span>"
+    if trash is False:
+        e += "<span class='icon icon3 icon_20px edit' title='Edit'></span>"
+        e += "<span class='icon icon4 icon_20px del' title='Move to Trash'></span>"
+    else:
+        e += "<span class='icon icon9 icon_20px res' title='Restore'></span>"
+        e += (
+            "<span class='icon icon4 icon_20px del' title='Delete permanently.'></span>"
+        )
     e += "</div>"
     e += "</div>"
     e += "<div class='event_bottom'>"
@@ -250,44 +249,24 @@ def create_event(event, format_only=False):
 
 
 def trim(string):
-    """This function deletes extra whitespaces from string
-
-    Args:
-        string (str): string is the string to be trimmed
-
-    Returns:
-        str: trimmed string
-    """
     # print(re.findall(r"\s+\n+", string))
     # string = re.sub(r"\s+\n+", "\n", string.strip())
     # string = re.sub(r"\s+\n+", "\n", string)
     return re.sub(r"\s+", " ", string.strip())
 
 
-def ranged(
-    file,
-    start=0,
-    end=None,
-    block_size=8192,
-):
-    consumed = 0
+def delete_event(req, event_id):
+    event = Event.objects.get(
+        id=event_id, owner=req.session["userid"], trashed_on__isnull=False
+    )
 
-    file.seek(start)
+    upload_ids = json.loads(event.upload_ids)
+    for upload_id in upload_ids:
+        proc = Process(target=views.stream)
+        proc.start()
+        proc.terminate()
+        os.unlink(os.path.join(MEDIA_ROOT, Upload.objects.get(id=upload_id).path))
+        Upload.objects.get(id=upload_id).delete()
 
-    while True:
-        data_length = min(block_size, end - start - consumed) if end else block_size
-
-        if data_length <= 0:
-            break
-
-        data = file.read(data_length)
-
-        if not data:
-            break
-
-        consumed += data_length
-
-        return data
-
-    if hasattr(file, "close"):
-        file.close()
+    Event.delete_event(req, event_id)
+    return True

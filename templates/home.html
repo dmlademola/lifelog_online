@@ -4,7 +4,7 @@
 
     <head>
         <title>
-            My lifelog - Home.
+            Lifelog - Home.
         </title>
         <meta charset="UTF-8">
         <meta name="description" content="I'm a friend and lifelog that you can share things with." />
@@ -12,24 +12,37 @@
         <meta name="author" content="Dml Ademola, TechWise LLC." />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="theme-color" content="rgb(1, 1, 34)" />
-        <link rel="icon" href="{% static 'images/lifelog_lg.jpg' %}" type="image/jpg" />
+        <link rel="icon" href="{% if heads.theme == "dark" %}{% static 'images/lifelog_dark.png' %}{% else %}{% static 'images/lifelog_light.png' %}{% endif %}" type="image/png" />
         <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-        <link rel="stylesheet" href="{% if user.theme == "light" %}{% static 'css/light_theme.css' %}{% elif user.theme == "dark" %}{% static 'css/dark_theme.css' %}{% else %}{% static 'css/grey_theme.css' %}{% endif %}" id="theme" />
+        <link rel="stylesheet" href="{% if heads.theme == "dark" %}{% static 'css/dark_theme.css' %}{% else %}{% static 'css/light_theme.css' %}{% endif %}" id="theme" />
     </head>
 
     <body>
-        {% if user.newly_signed_in == True %}
+        {% if heads.newly_signed_in == True %}
         <div class='welcome' id='welcome'>
             <h1>Welcome to ...</h1>
-            <img src="{% static 'images/lifelog_lg.jpg' %}" alt='#img'><br />
-            <p class='wel'>My lifelog</p>
+            <img src="{% if heads.theme == "dark" %}{% static 'images/lifelog_dark.png' %}{% else %}{% static 'images/lifelog_light.png' %}{% endif %}" class="wel_img" alt='#img'><br />
         </div>
         {% endif %}
         <div class="container1">
             <div class="head">
                 <div class="division logo">
-                    <img src="{% static 'images/lifelog_lg.jpg' %}" alt='' style='width: 15px; height: 15px;' />
-                    <p>Lifelog.</p>
+                    <img src="{% if heads.theme == "dark" %}{% static 'images/lifelog_dark.png' %}{% else %}{% static 'images/lifelog_light.png' %}{% endif %}" alt='' />
+                    {% comment %} <p>Lifelog.</p> {% endcomment %}
+                </div>
+                <div class="division top_nav">
+                    <div class="nav_icon home active" title="Home.">
+                        <span class='icon icon8'></span>
+                    </div>
+                    <div class="nav_icon trash" title="Trash.">
+                        <span class='icon icon4'></span>
+                    </div>
+                    <div class="nav_icon profile" title="Profile &amp; Preferences.">
+                        <span class='icon icon10'></span>
+                    </div>
+                    <div class="nav_icon signout" title="Sign Out.">
+                        <span class='del icon icon7'></span>
+                    </div>
                 </div>
                 <div class="division search">
                     <form name="search">
@@ -37,43 +50,22 @@
                             <form name="search">
                                 {% csrf_token %}
                                 <input type='text' name='search_str' class='input2' placeholder='Search for an event...' autocomplete="off" />
-                                <span title='Clear and refresh page...' id="clear" class="icon icon11"></span>
-                                {% comment %} <button type="submit"><span class="icon icon11"></span></button> {% endcomment %}
+                                <span title='Clear search...' id="clear" class="icon icon11"></span>
                             </form>
                         </div>
                     </form>
                 </div>
-                <div class="division user">
-                    <div class ="user_img">
-                        <img src="{% static 'images/lifelog_lg.jpg' %}" alt=''/>
-                    </div>
-                    <p>Hola, {{user.fullname}}</p>
-                </div>
             </div>
             <div class="main" id="main">
-                <div class="add">
-                    <span class="icon icon6" onclick="fscreen(document.getElementById('n_event'));"></span>
-                </div>
-                <div class="sidebar">
-                    <div class="nav_icon active">
-                        <a href="{% url 'home' %}" class='icon icon8' title="Home."></a>
-                    </div>
-                    <div class="nav_icon">
-                        <a href="{% url 'trash' %}" class='icon icon4' title="Go to Trash."></a>
-                    </div>
-                    <div class="nav_icon">
-                        <a href="{% url 'profile' %}" class='icon icon10' title="Profile &amp; Preferences."></a>
-                    </div>
-                    <div class="nav_icon signout">
-                        <a href="{% url 'signout' %}" class='del icon icon7' title="Sign Out."></a>
-                    </div>
+                <div class="add" title="Add new event.">
+                    <span class="icon icon6"></span>
                 </div>
                 <div class="events" id="events">
                     {% if events|length > 0 %}
                     {% for event in events %}
                     <div class='event' id="e{{event.id}}">
                         <div class='ent_cont'>
-                            {% comment %} <input type="checkbox" data-id="e{{event.id}}" class="checkbox"/> {% endcomment %}
+                            {% comment %} <input type="checkbox" data-id="e{{event.id}}" class="checkbox" /> {% endcomment %}
                             {% if event.happy_moment == True %}<span class="happy_moment" title="Happy Moment">😀</span>{% endif %}
                             <div class='entries'>
                                 <p class='brief'>{% autoescape off %}{{event.brief}}{% endautoescape %}</p>
@@ -105,7 +97,7 @@
                             <input type="text" name="brief" id="brief" /><br>
                             <span id='brief_count'></span><br />
                             <label for="uploads">Upload Files</label>
-                            <input type="file" name="uploads" id="uploads" multiple hidden/>
+                            <input type="file" name="uploads" id="uploads" multiple hidden />
                             <div class="cont">
                                 <div class="uploads_preview" id="uploads_preview" onclick="$('#uploads').click();">
                                     <p class="upload_text">Click or drag files here...</p>

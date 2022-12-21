@@ -1,10 +1,9 @@
 from django.urls import path, include
-
 from . import views, ajax
-
+import django_eventstream
 
 urlpatterns = [
-    path("", views.redirect, name=""),
+    path("", views.redirect, name="root"),
     path("signin/", views.signin_process, name="signin"),
     path("signup/", views.signup_process, name="signup"),
     path("home/", views.home, name="home"),
@@ -20,6 +19,9 @@ urlpatterns = [
     path("ajax/edit_event/", ajax.edit_event, name="edit_event_ajax"),
     path("ajax/trash_event/", ajax.trash_event, name="trash_event_ajax"),
     path("ajax/get_event/", ajax.get_event, name="get_event_ajax"),
+    path("ajax/restore_event/", ajax.restore_event, name="restore_event_ajax"),
+    path("ajax/delete_event/", ajax.delete_event, name="delete_event_ajax"),
+    path("ajax/delete_file/", ajax.delete_file, name="delete_file_ajax"),
     # path("ajax/get_event/<int:event_id>", ajax.edit_event_setup, name="view_event_ajax"),
     # she iyyah mahdi ni
     # path("psw-gen/", views.psw_gen, name="psw_gen"),

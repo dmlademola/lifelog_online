@@ -227,13 +227,20 @@ input:focus {
     align-content: center;
     overflow: hidden;
 }
+.date_of_birth{
+    border-radius: 0;
+}
 .div{
     margin: 5px 5% 5px 5%;
 }
 .header1{
-    text-align: center;
-    margin: 5px;
-    padding: 10px;
+    width: 300px;
+    display: block;
+    margin: auto;
+}
+.header1 img {
+    width: 100%;
+    max-height: 100%;
 }
 .container1{
     display: flex;
@@ -243,16 +250,28 @@ input:focus {
 }
 .head{
     display: flex;
+    font-size: 2vw;
     align-items: stretch;
     justify-content: space-around;
 }
-.head div p{
+.head .division p{
     display: inline;
+    margin: 0;
 }
-.head div {
-    margin: 2px 0;
+.head .division {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+    align-items: center;
+    flex: 1;
+    margin: 3px;
 }
-
+.head .division.logo{
+    justify-content: center;
+}
+.search_cont input.search_str {
+    flex: 1;
+}
 .sidebar{
     display: flex;
     flex-direction: column;
@@ -498,6 +517,9 @@ div.preview_cont div.caption_cont{
     margin: auto;
     display: none;
 }
+.top_nav .nav_icon {
+    cursor: pointer;
+}
 .preview *:first-child{
     display: block!important;
 }
@@ -535,7 +557,8 @@ div.preview_cont div.caption_cont{
 }
 #text{
     /* color: red; */
-    text-align: center;
+    display: block;
+    margin: auto;
 }
 .prog_cont, .e_prog_cont {
     height: 10px;
@@ -573,21 +596,34 @@ input:disabled, select:disabled, textarea:disabled {
     /* display: inline-block; */
     margin: 0;
 }
+#msg, #e_msg {
+    display: block;
+    visibility: hidden;
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+    color: black;
+    margin: 0 5% 10px 5%;
+    border-left: 5px solid lime;
+    background-color: white;
+}
 .suc {
     display: block;
     text-align: center;
-    background-color: rgb(179, 255, 172);
+    background-color: rgb(179, 255, 172)!important;
     font-weight: bold;
-    border-left: 5px solid limegreen;
+    border-left: 5px solid limegreen!important;
+    color: black;
     padding: 10px;
     margin: 0 5% 10px 5%;
 }
 .err{
     display: block;
     text-align: center;
-    background-color: rgb(255, 175, 175);
+    background-color: rgb(255, 175, 175)!important;
     font-weight: bold;
-    border-left: 5px solid red;
+    border-left: 5px solid red!important;
+    color: black;
     padding: 10px;
     margin: 0 5% 10px 5%;
 }
@@ -597,14 +633,6 @@ input:disabled, select:disabled, textarea:disabled {
 .err a:hover{
     color: inherit;
     font-weight: 900;
-}
-.restore_act{
-    color: royalblue;
-    /* float: right; */
-    cursor: pointer;
-}
-.restore_act:hover{
-    text-decoration: underline;
 }
 .date_of_event{
     display: flex;
@@ -629,17 +657,6 @@ input:disabled, select:disabled, textarea:disabled {
     opacity: 1;
     max-height: 100%;
 }
-#msg, #e_msg {
-    display: block;
-    visibility: hidden;
-    text-align: center;
-    background-color: white;
-    font-weight: bold;
-    border-left: 5px solid lime;
-    padding: 10px;
-    color: black;
-    margin: 0 5% 0 5%;
-}
 .bottom{
     text-align: center;
     /* font-size: x-large; */
@@ -653,6 +670,11 @@ input:disabled, select:disabled, textarea:disabled {
     margin: 0 10px;
     cursor: pointer;
     font-weight: 900;
+}
+.top_nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
 }
 .sidebar .nav_icon{
     padding: 10px;
@@ -691,8 +713,11 @@ input:disabled, select:disabled, textarea:disabled {
     right: 10px;
     bottom: 35px;
     z-index: 8;
-    color: black;
-    font-size: x-large;
+    cursor: pointer;
+    font-size: large;
+}
+.label1{
+    margin: 10px 5% 10px 5%;
 }
 .happy_moment{
     position: absolute;
@@ -752,6 +777,10 @@ input:disabled, select:disabled, textarea:disabled {
     cursor: pointer;
     float: right;
 }
+.wel_img{
+    max-width: 500px;
+    /* height: 500px; */
+}
 .e_preview{
     display: none;
     align-items: stretch;
@@ -762,7 +791,7 @@ input:disabled, select:disabled, textarea:disabled {
 }
 .e_preview *{
     max-width: 100%!important;
-    max-height: 500px;
+    max-height: 100%;
     display: unset;
 }
 .file_pare{
@@ -807,8 +836,7 @@ input:disabled, select:disabled, textarea:disabled {
     padding: 10px 0;
     display: none;
     margin: auto;
-    width: auto;
-    max-width: 95%;
+    width: 95%;
 }
 .event_container{
     display: flex;
@@ -848,16 +876,23 @@ input:disabled, select:disabled, textarea:disabled {
     height: 20px;
     border-radius: 1rem;
 }
+.division img {
+    max-width: 130px;
+    max-height: 100%;
+}
 #size_used{
     height: 100%;
     border-radius: 1rem;
 }
-span.icon5, .pending{
+span.icon5, .pending, .rotate{
     animation-name: rotate;
     animation-duration: 1s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
     cursor: auto;
+}
+.rotate{
+    animation-iteration-count: 1;
 }
 span.active{
     border-bottom: 2px solid blue;

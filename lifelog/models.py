@@ -133,6 +133,30 @@ class Event(models.Model):
             )
             return False
 
+    def restore_event(req, event_id):
+        try:
+            Event.objects.filter(id=event_id).update(trashed_on=None)
+            return True
+        except BaseException as Argument:
+            Error.log_error(
+                str(Argument),
+                req,
+                "Event.restore_event()",
+            )
+            return False
+
+    def delete_event(req, event_id):
+        try:
+            Event.objects.filter(id=event_id).delete()
+            return True
+        except BaseException as Argument:
+            Error.log_error(
+                str(Argument),
+                req,
+                "Event.restore_event()",
+            )
+            return False
+
     owner = models.PositiveIntegerField()
     upload_ids = models.CharField(max_length=100000, blank=True)
     brief = models.CharField(max_length=150, blank=False)

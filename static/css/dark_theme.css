@@ -9,8 +9,13 @@ a:hover{
     color: whitesmoke;
 }
 .head{
-    background-color: rgb(14, 14, 64);
-    /* border-bottom: 1px dotted white; */
+    background-color: #2d2d2d;
+}
+.events{
+    background-color: rgb(20, 20, 20);
+}
+.search_cont{
+    background-color: whitesmoke;
 }
 .bottom {
     border-top: 1px dotted white;
@@ -18,24 +23,15 @@ a:hover{
 .del, .del1{
     color: red;
 }
-.suc, .err {
-    color: rgb(1, 1, 34);
-}
-.prog_cont, .e_prog_cont {
-    border: 1px solid whitesmoke;
-}
 .welcome{
     color: whitesmoke;
-    background-color: rgb(1, 1, 34);
-}
-.search_cont{
-    background-color: whitesmoke;
+    background-color: #2d2d2d;
 }
 .res{
     color: rgb(1, 200, 1);
 }
 body {
-    background-color: rgb(1, 1, 34);
+    background-color: rgb(20, 20, 20);
     color: whitesmoke;
 }
 [type=file] {
@@ -53,38 +49,52 @@ body {
 .post_input{
     color: black;
 }
-.add{
-    background-color: whitesmoke;
-}
 .footer1{
     background-color: white;
     color: black;
 }
+.fscreen{
+    background-color: rgb(20, 20, 20);
+}
 .input_group {
     background-color: white;
-}
-.fscreen{
-    background-color: rgb(1, 1, 34);
 }
 .n_event input, .n_event textarea, .e_event input, .e_event textarea{
     border: 0;
     outline: 0;
 }
-/* .preview {
-    border: 1px dotted whitesmoke;
-} */
 .sidebar{
-    background-color: rgb(14, 14, 64);
+    background-color: #2d2d2d;
+}
+.add{
+    color: #2d2d2d;
+    background-color: whitesmoke;
 }
 .event {
-    background-color: rgb(14, 14, 64);
-    border: 2px solid black;
+    border: 2px solid rgb(10,10,10);
 }
 .form_div button {
     border: 0;
 }
+.e_uploads_preview, .uploads_preview, .uploads_view{
+    background-color: #2d2d2d;
+    border: 2px dashed rgb(10,10,10);
+}
+.uploads_view{
+    border: 1px solid rgb(10,10,10);
+}
 .container{
     border: 1px solid white;
+}
+.prev:hover, .next:hover {
+  background-color: whitesmoke;
+  color: #2d2d2d;
+}
+.top_nav .nav_icon.active {
+    border-bottom: 1px solid whitesmoke;
+}
+.top_nav .nav_icon:hover {
+    border-bottom: 1px dotted whitesmoke;
 }
 .msg_box{
     color: black;
@@ -93,8 +103,8 @@ body {
 .top_act .icon:hover, .top_act a:hover {
     border-bottom: 1px dotted whitesmoke;
 }
-.events{
-    background-color: rgb(1,1,34);
+.event{
+    background-color: #2d2d2d;
 }
 .action_pare .del:hover{
     text-decoration: underline;
@@ -107,5 +117,5 @@ body {
     border-radius: 100rem;
 }
 ::-webkit-scrollbar-track {
-    background: rgb(1, 1, 34);
+    background: #2d2d2d;
 }

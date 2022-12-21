@@ -137,7 +137,7 @@ def profile(
             output = Outcome(False, "Select your preferred theme!", False)
             return output
 
-        if theme != "light" and theme != "dark" and theme != "grey":
+        if theme not in ["light", "dark"]:
             output = Outcome(False, "Select a valid theme!", False)
             return output
 

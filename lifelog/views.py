@@ -4,7 +4,6 @@ import json
 import mimetypes
 import os
 import re
-import zoneinfo
 from random import randint
 from wsgiref.util import FileWrapper
 

@@ -464,7 +464,7 @@ function msg_box_view(message) {
             if ($('body').contains($('div.msg_box'))) {
                 $('div.msg_box').parentNode.removeChild($('div.msg_box'));
             }
-        }, 10000)
+        }, 1000000)
         return;
     }
     var msg_box = document.createElement("div");
@@ -496,7 +496,7 @@ function msg_box_view(message) {
         if ($('body').contains($('div.msg_box'))) {
             $('div.msg_box').parentNode.removeChild($('div.msg_box'));
         }
-    }, 10000)
+    }, 1000000)
 }
 function next_slide(event, elem) {
     if (elem.parentNode.nextElementSibling != null) {

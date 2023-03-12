@@ -471,24 +471,21 @@ def stream(req):
 
 def admin(req):
     try:
-        if req.session["userid"] == 1:
-            errs = Error.objects.all().order_by("-time_gen")
-            for err in errs:
-                if err.user_id and err.user_id != "False":
-                    err.user_id = (
-                        User.objects.get(id=err.user_id).fullname
-                        + "(id "
-                        + err.user_id
-                        + ")"
-                    )
+        errs = Error.objects.all().order_by("-time_gen")
+        for err in errs:
+            if err.user_id and err.user_id != "False":
+                err.user_id = (
+                    User.objects.get(id=err.user_id).fullname
+                    + "(id "
+                    + err.user_id
+                    + ")"
+                )
 
-                else:
-                    err.user_id = "None"
-            # errs.delete()
+            else:
+                err.user_id = "None"
+        # errs.delete()
 
-            return render(req, "admin/ndex.html", {"errs": errs})
-        else:
-            return render(req, "error.html")
+        return render(req, "admin/ndex.html", {"errs": errs})
 
     except BaseException as Argument:
         Error.log_error(

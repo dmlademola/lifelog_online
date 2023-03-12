@@ -36,3 +36,5 @@ tzdata
 urllib3
 Werkzeug
 wheel
+dj_database_url
+gunicorn

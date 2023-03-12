@@ -195,56 +195,56 @@ def signin_process(req):
 
 
 def home(req):
-    # try:
-    if myutils.user_is_loggedin(req) is not True:
-        messages.info(
+    try:
+        if myutils.user_is_loggedin(req) is not True:
+            messages.info(
+                req,
+                safestring.mark_safe(
+                    "<p id='msg' style='visibility: visible'>You have to sign in first!</p>"
+                ),
+            )
+            return HttpResponseRedirect(
+                reverse("signin") + "?continue=" + reverse("home")
+            )
+
+        userid = req.session["userid"]
+        req.session["curr_home_page"] = 0
+        heads = dict()
+        heads["theme"] = req.session["theme"]
+        if req.session.get("newly_signed_in", False) is not False:
+            heads["newly_signed_in"] = True
+            del req.session["newly_signed_in"]
+
+        events = (
+            Event.objects.filter(owner=userid, trashed_on__isnull=True)
+            .values(
+                "id",
+                "brief",
+                "details",
+                "upload_ids",
+                "date_of_event",
+                "happy_moment",
+            )
+            .order_by("-date_of_event", "time_added")[0:15]
+        )
+
+        for event in events:
+            event = myutils.create_event(event, format_only=True)
+
+        date = myutils.date_gen(datetime.datetime.now())
+
+        return render(
             req,
-            safestring.mark_safe(
-                "<p id='msg' style='visibility: visible'>You have to sign in first!</p>"
-            ),
+            "home.html",
+            {"heads": heads, "events": events, "date": date},
         )
-        return HttpResponseRedirect(reverse("signin") + "?continue=" + reverse("home"))
-
-    userid = req.session["userid"]
-    req.session["curr_home_page"] = 0
-    heads = dict()
-    heads["theme"] = req.session["theme"]
-    if req.session.get("newly_signed_in", False) is not False:
-        heads["newly_signed_in"] = True
-        del req.session["newly_signed_in"]
-
-    events = (
-        Event.objects.filter(owner=userid, trashed_on__isnull=True)
-        .values(
-            "id",
-            "brief",
-            "details",
-            "upload_ids",
-            "date_of_event",
-            "happy_moment",
+    except BaseException as Argument:
+        Error.log_error(
+            str(Argument),
+            req,
+            "lifelog.home() from " + reverse("home"),
         )
-        .order_by("-date_of_event", "time_added")[0:15]
-    )
-
-    for event in events:
-        event = myutils.create_event(event, format_only=True)
-
-    date = myutils.date_gen(datetime.datetime.now())
-
-    return render(
-        req,
-        "home.html",
-        {"heads": heads, "events": events, "date": date},
-    )
-
-
-# except BaseException as Argument:
-#     Error.log_error(
-#         str(Argument),
-#         req,
-#         "lifelog.home() from " + reverse("home"),
-#     )
-#     return render(req, "error.html")
+        return render(req, "error.html")
 
 
 def signout(req):
@@ -471,21 +471,24 @@ def stream(req):
 
 def admin(req):
     try:
-        errs = Error.objects.all().order_by("-time_gen")
-        for err in errs:
-            if err.user_id and err.user_id != "False":
-                err.user_id = (
-                    User.objects.get(id=err.user_id).fullname
-                    + "(id "
-                    + err.user_id
-                    + ")"
-                )
+        if req.session["userid"] == 1:
+            errs = Error.objects.all().order_by("-time_gen")
+            for err in errs:
+                if err.user_id and err.user_id != "False":
+                    err.user_id = (
+                        User.objects.get(id=err.user_id).fullname
+                        + "(id "
+                        + err.user_id
+                        + ")"
+                    )
 
-            else:
-                err.user_id = "None"
-        # errs.delete()
+                else:
+                    err.user_id = "None"
+            # errs.delete()
 
-        return render(req, "admin/ndex.html", {"errs": errs})
+            return render(req, "admin/ndex.html", {"errs": errs})
+        else:
+            return render(req, "error.html")
 
     except BaseException as Argument:
         Error.log_error(
